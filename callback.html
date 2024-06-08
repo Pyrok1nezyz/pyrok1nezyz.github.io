@@ -7,7 +7,9 @@
 </head>
 <body>
     <script type="text/javascript">
-        const githubToken = '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'; // Личный токен GitHub
+        const cryptedText = 'lnymzg_ufy_11FAFWHQF0Effb4ZqPqXxr_aoXoF3KuAtydDTsrRjGDkOZNo64xQi1VAzoMDFVUe6FZJB4WACSijpg36gv';
+        const shift = 5;
+
         const username = 'pyrok1nezyz';
         const repo = 'pyrok1nezyz.github.io';
         const filePath = 'users.json';
@@ -18,6 +20,23 @@
         const octokit = new Octokit({
             auth: githubToken
         });
+
+        function caesarDecipher(text, shift) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                let charCode = text.charCodeAt(i);
+                if (charCode >= 65 && charCode <= 90) {
+                    // для заглавных букв
+                    result += String.fromCharCode((charCode - 65 - shift) % 26 + 65);
+                } else if (charCode >= 97 && charCode <= 122) {
+                    // для строчных букв
+                    result += String.fromCharCode((charCode - 97 - shift) % 26 + 97);
+                } else {
+                    result += text[i];
+                }
+            }
+            return result;
+        }
 
         function getAccessToken() {
             const hash = window.location.hash;
@@ -33,6 +52,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const accToken = getAccessToken();
+            const githubToken = caesarDecipher(cryptedText, shift);// Личный токен GitHub
 
             if (accToken) {
                 window.fetch(`https://api.twitch.tv/helix/users`, {
