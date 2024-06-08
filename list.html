@@ -118,13 +118,14 @@
                     cc_load_policy: 0,
                     iv_load_policy: 3,
                     autohide: 0,
-                    mute: 1,
+                    mute: 0,
                     playlist: 'dQw4w9WgXcQ'
                 },
                 events: {
                     onReady: function (event) {
-                        event.target.mute();
+                        //event.target.mute();
                         event.target.playVideo();
+                        event.target.volume(40);
                     },
                     onStateChange: function (event) {
                         if (event.data === YT.PlayerState.ENDED) {
