@@ -8,7 +8,7 @@
 <button id="rickroll-button">Get Rickrolled!</button>
 
 <script>
-    document.getElementById('rickroll-button').addEventListener('click', () => {
+    document.addEventListener('DOMContentLoaded', function() {
         const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
         const redirectUri = 'https://pyrok1nezyz.github.io/callback.html';
         const scope = 'user:read:email';
