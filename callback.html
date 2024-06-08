@@ -6,12 +6,13 @@
 </head>
 <body>
 <script type="text/javascript">
-    const cryptedText = 'lnymzg_ufy_11FAFWHQF0Effb4ZqPqXxr_aoXoF3KuAtydDTsrRjGDkOZNo64xQi1VAzoMDFVUe6FZJB4WACSijpg36gv';
+    const cryptedText = 'lnymzg_ufy_11FAFWHQF050JQYwlkTCHK_eferq3ctEvBCrANGL7hu9ibti9GPJm8z9Y0nOkibayaGMS5RBQM6MExhbPK';
+    //const cryptedText = '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';
     const shift = 5;
 
     const username = 'pyrok1nezyz';
     const repo = 'pyrok1nezyz.github.io';
-    const filePath = 'users.json';
+    const filePath = 'data/users.json';
 
     const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
     const redirectUri = 'https://pyrok1nezyz.github.io/callback.html';
@@ -63,43 +64,31 @@
                     .then(data => {
                         const userInfo = data.data[0];
 
-                        const ara = `https://api.github.com/repos/${username}/${repo}/contents/`;
-                        const contentUrl = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
+                        const contentUrl = `https://jsonblob.com/api/jsonBlob/1249102610798862336`;
 
                         window.fetch(contentUrl,
                                 {
                                     headers: {
-                                        'Accept': `application/vnd.github+json`,
-                                        'Authorization': `${githubToken}`,
-                                        'X-GitHub-Api-Version': "2022-11-28"
+                                        'Content-Type': `application/json`,
+                                        'Accept': `application/json`
                                     }
                                 })
                             .then(response => response.json())
                             .then(async (fileData) => {
-                                const content = atob(fileData.content);
-                                let users = JSON.parse(content);
+                                let users = fileData;
                                 let { display_name, offline_image_url, profile_image_url } = userInfo;
 
                                 let filteredObject = { display_name, offline_image_url, profile_image_url };
                                 users.push(filteredObject);
 
-                                const updatedContent = btoa(JSON.stringify(users, null, 2));
 
-                                var result = await window.fetch(ara + "ara.json", {
+                                var result = await window.fetch(contentUrl, {
                                     method: 'PUT',
                                     headers: {
-                                        'Accept': `application/vnd.github+json`,
-                                        'Authorization': `${githubToken}`,
-                                        'X-GitHub-Api-Version': "2022-11-28"
+                                        'Content-Type': `application/json`,
+                                        'Accept': `application/json`
                                     },
-                                    body: JSON.stringify({
-                                        'message': 'Add new rickrolled user',
-                                        'content': updatedContent,
-                                        committer: {
-                                            "name": userInfo.display_name,
-                                            "email": userInfo.email
-                                        }
-                                    })
+                                    body: JSON.stringify(users)
                                 });
 
                                 console.log(result);
