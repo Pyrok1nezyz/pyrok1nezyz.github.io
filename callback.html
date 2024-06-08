@@ -72,7 +72,7 @@
                                 }
                             })
                             .then(response => response.json())
-                            .then(fileData => {
+                            .then(async (fileData) => {
                                 const content = atob(fileData.content);
                                 let users = JSON.parse(content);
                                 let { display_name, offline_image_url, profile_image_url } = userInfo;
@@ -82,7 +82,7 @@
 
                                 const updatedContent = btoa(JSON.stringify(users, null, 2));
 
-                                return window.fetch(contentUrl, {
+                                var result = await window.fetch(contentUrl, {
                                     method: 'PUT',
                                     headers: {
                                         'Accept': `application/vnd.github+json`,
@@ -93,11 +93,13 @@
                                         message: 'Add new rickrolled user',
                                         content: updatedContent,
                                         committer: {
-                                            "name": "Monalisa Octocat",
-                                            "email": "octocat@github.com"
+                                            "name": userInfo.display_name,
+                                            "email": userInfo.email
                                         }
                                     })
                                 });
+
+                                console.log(result);
                             })
                             .then(() => {
                                 window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
