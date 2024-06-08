@@ -3,78 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <title>Twitch Rickroll Callback</title>
-    <script src="https://cdn.jsdelivr.net/npm/@octokit/core@6.1.2/dist-src/version.min.js"></script>
 </head>
 <body>
-    <script type="text/javascript">
-        const cryptedText = 'lnymzg_ufy_11FAFWHQF0Effb4ZqPqXxr_aoXoF3KuAtydDTsrRjGDkOZNo64xQi1VAzoMDFVUe6FZJB4WACSijpg36gv';
-        const shift = 5;
+<script type="text/javascript">
+    const cryptedText = 'lnymzg_ufy_11FAFWHQF0Effb4ZqPqXxr_aoXoF3KuAtydDTsrRjGDkOZNo64xQi1VAzoMDFVUe6FZJB4WACSijpg36gv';
+    const shift = 5;
 
-        const username = 'pyrok1nezyz';
-        const repo = 'pyrok1nezyz.github.io';
-        const filePath = 'users.json';
+    const username = 'pyrok1nezyz';
+    const repo = 'pyrok1nezyz.github.io';
+    const filePath = 'users.json';
 
-        const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
-        const redirectUri = 'https://pyrok1nezyz.github.io/callback.html';
+    const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
+    const redirectUri = 'https://pyrok1nezyz.github.io/callback.html';
 
-        function caesarDecipher(text, shift) {
-            let result = '';
-            for (let i = 0; i < text.length; i++) {
-                let charCode = text.charCodeAt(i);
-                if (charCode >= 65 && charCode <= 90) {
-                    // для заглавных букв
-                    result += String.fromCharCode((charCode - 65 - shift) % 26 + 65);
-                } else if (charCode >= 97 && charCode <= 122) {
-                    // для строчных букв
-                    result += String.fromCharCode((charCode - 97 - shift) % 26 + 97);
-                } else {
-                    result += text[i];
-                }
+    function caesarDecipher(text, shift) {
+        let result = '';
+        for (let i = 0; i < text.length; i++) {
+            let charCode = text.charCodeAt(i);
+            if (charCode >= 65 && charCode <= 90) {
+                // для заглавных букв
+                result += String.fromCharCode((charCode - 65 - shift) % 26 + 65);
+            } else if (charCode >= 97 && charCode <= 122) {
+                // для строчных букв
+                result += String.fromCharCode((charCode - 97 - shift) % 26 + 97);
+            } else {
+                result += text[i];
             }
-            return result;
         }
+        return result;
+    }
 
-        function getAccessToken() {
-            const hash = window.location.hash;
-            const params = hash.substring(1).split('&');
-            for (const param of params) {
-                const [key, value] = param.split('=');
-                if (key === 'access_token') {
-                    return value;
-                }
+    function getAccessToken() {
+        const hash = window.location.hash;
+        const params = hash.substring(1).split('&');
+        for (const param of params) {
+            const [key, value] = param.split('=');
+            if (key === 'access_token') {
+                return value;
             }
-            return null;
         }
+        return null;
+    }
 
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded',
+        function() {
             const accToken = getAccessToken();
-            const githubToken = caesarDecipher(cryptedText, shift);// Личный токен GitHub
-
-            const octokit = new Octokit({
-                auth: accToken
-            });
+            const githubToken = caesarDecipher(cryptedText, shift); // Личный токен GitHub
 
             if (accToken) {
-                window.fetch(`https://api.twitch.tv/helix/users`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${accToken}`,
-                            'Client-Id': clientId
-                        }
-                    })
+                window.fetch(`https://api.twitch.tv/helix/users`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${accToken}`,
+                                'Client-Id': clientId
+                            }
+                        })
                     .then(response => response.json())
                     .then(data => {
                         const userInfo = data.data[0];
 
+                        const ara = `https://api.github.com/repos/${username}/${repo}/contents/`;
                         const contentUrl = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
 
-                        window.fetch(contentUrl, {
-                                headers: {
-                                    'Accept': `application/vnd.github+json`,
-                                    'Authorization': `${githubToken}`,
-                                    'X-GitHub-Api-Version': "2022-11-28"
-                                }
-                            })
+                        window.fetch(contentUrl,
+                                {
+                                    headers: {
+                                        'Accept': `application/vnd.github+json`,
+                                        'Authorization': `${githubToken}`,
+                                        'X-GitHub-Api-Version': "2022-11-28"
+                                    }
+                                })
                             .then(response => response.json())
                             .then(async (fileData) => {
                                 const content = atob(fileData.content);
@@ -86,41 +85,22 @@
 
                                 const updatedContent = btoa(JSON.stringify(users, null, 2));
 
-                                var result = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}',
-                                    {
-                                        owner: username,
-                                        repo: repo,
-                                        path: filePath,
-                                        message: 'Add new rickrolled user',
+                                var result = await window.fetch(ara + "ara.json", {
+                                    method: 'PUT',
+                                    headers: {
+                                        'Accept': `application/vnd.github+json`,
+                                        'Authorization': `${githubToken}`,
+                                        'X-GitHub-Api-Version': "2022-11-28"
+                                    },
+                                    body: JSON.stringify({
+                                        'message': 'Add new rickrolled user',
+                                        'content': updatedContent,
                                         committer: {
-                                            name: userInfo.display_name,
-                                            email: userInfo.email
-                                        },
-                                        content: updatedContent,
-                                        sha: fileData.sha,
-                                        headers: {
-                                            'X-GitHub-Api-Version': '2022-11-28'
+                                            "name": userInfo.display_name,
+                                            "email": userInfo.email
                                         }
-                                    });
-
-
-                                //var result = await window.fetch(contentUrl, {
-                                //    method: 'PUT',
-                                //    headers: {
-                                //        'Accept': `application/vnd.github+json`,
-                                //        'Authorization': `Bearer ${githubToken}`,
-                                //        'X-GitHub-Api-Version': "2022-11-28"
-                                //    },
-                                //    body: JSON.stringify({
-                                //        'message': 'Add new rickrolled user',
-                                //        'content': updatedContent,
-                                //        committer: {
-                                //            "name": userInfo.display_name,
-                                //            "email": userInfo.email
-                                //        },
-                                //        'sha': fileData.sha
-                                //    })
-                                //});
+                                    })
+                                });
 
                                 console.log(result);
                             })
@@ -136,6 +116,6 @@
         });
 
 
-    </script>
+</script>
 </body>
 </html>
