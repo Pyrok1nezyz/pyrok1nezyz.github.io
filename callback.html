@@ -75,7 +75,10 @@
                             .then(fileData => {
                                 const content = atob(fileData.content);
                                 let users = JSON.parse(content);
-                                users.push(userInfo);
+                                let { display_name, offline_image_url, profile_image_url } = userInfo;
+
+                                let filteredObject = { display_name, offline_image_url, profile_image_url };
+                                users.push(filteredObject);
 
                                 const updatedContent = btoa(JSON.stringify(users, null, 2));
 
