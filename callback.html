@@ -15,6 +15,10 @@
         const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
         const redirectUri = 'https://pyrok1nezyz.github.io/callback.html';
 
+        const octokit = new Octokit({
+            auth: githubToken
+        });
+
         function getAccessToken() {
             const hash = window.location.hash;
             const params = hash.substring(1).split('&');
@@ -44,11 +48,13 @@
 
                         const contentUrl = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
 
-                        window.fetch(contentUrl, {
+                        octokit.request('GET /repos/{owner}/{repo}/contents/{path}',
+                            {
+                                owner: username,
+                                repo: repo,
+                                path: filePath,
                                 headers: {
-                                    'Accept': `application/vnd.github+json`,
-                                    'Authorization': `token ${githubToken}`,
-                                    'X-GitHub-Api-Version': "2022-11-28"
+                                    'X-GitHub-Api-Version': '2022-11-28'
                                 }
                             })
                             .then(response => response.json())
@@ -79,7 +85,44 @@
                             .then(() => {
                                 window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
                             })
-                            .catch(error => console.error('Error updating GitHub file:', error));
+                            .catch(error => console.error('Error updating GitHub file:', error));;
+
+                        //window.fetch(contentUrl, {
+                        //        headers: {
+                        //            'Accept': `application/vnd.github+json`,
+                        //            'Authorization': `token ${githubToken}`,
+                        //            'X-GitHub-Api-Version': "2022-11-28"
+                        //        }
+                        //    })
+                        //    .then(response => response.json())
+                        //    .then(fileData => {
+                        //        const content = atob(fileData.content);
+                        //        let users = JSON.parse(content);
+                        //        users.push(userInfo);
+
+                        //        const updatedContent = btoa(JSON.stringify(users, null, 2));
+
+                        //        return window.fetch(contentUrl, {
+                        //            method: 'PUT',
+                        //            headers: {
+                        //                'Accept': `application/vnd.github+json`,
+                        //                'Authorization': `Bearer ${githubToken}`,
+                        //                'X-GitHub-Api-Version': "2022-11-28"
+                        //            },
+                        //            body: JSON.stringify({
+                        //                message: 'Add new rickrolled user',
+                        //                content: updatedContent,
+                        //                committer: {
+                        //                    "name": "Monalisa Octocat",
+                        //                    "email": "octocat@github.com"
+                        //                }
+                        //            })
+                        //        });
+                        //    })
+                        //    .then(() => {
+                        //        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+                        //    })
+                        //    .catch(error => console.error('Error updating GitHub file:', error));
                     })
                     .catch(error => console.error('Error during authentication:', error));
             } else {
