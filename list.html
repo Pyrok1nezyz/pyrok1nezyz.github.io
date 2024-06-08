@@ -52,7 +52,8 @@
     </style>
 </head>
 <body>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=9BH0yjRnqvSXYbo2&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <div id="background-video" class="background-video"></div>
+
     <div class="container mt-5 content">
         <div class="header">
             <h1>Список рикрольнутых!</h1>
@@ -77,44 +78,50 @@
                     const userGrid = document.getElementById('user-grid');
                     data.forEach(user => {
                         const userCard = `
-                    <div class="col-md-4 mb-4">
-                      <div class="card">
-                        <img src="${user.profile_image_url}" class="card-img-top" alt="${user.display_name}">
-                        <div class="card-body">
-                          <h5 class="card-title">${user.display_name}</h5>
-                        </div>
-                      </div>
+                <div class="col-md-4 mb-4">
+                  <div class="card">
+                    <img src="${user.profile_image_url}" class="card-img-top" alt="${user.display_name}">
+                    <div class="card-body">
+                      <h5 class="card-title">${user.display_name}</h5>
                     </div>
-                  `;
+                  </div>
+                </div>
+              `;
                         userGrid.insertAdjacentHTML('beforeend', userCard);
                     });
                 })
                 .catch(error => console.error('Error fetching user data:', error));
         });
 
-        //function onYouTubeIframeAPIReady() {
-        //    new YT.Player('background-video', {
-        //        videoId: 'cvh0nX08nRw',
-        //        playerVars: {
-        //            autoplay: 1,
-        //            controls: 0,
-        //            showinfo: 0,
-        //            modestbranding: 1,
-        //            loop: 1,
-        //            fs: 0,
-        //            cc_load_policy: 0,
-        //            iv_load_policy: 3,
-        //            autohide: 0,
-        //            mute: 1,
-        //            playlist: 'cvh0nX08nRw'
-        //        },
-        //        events: {
-        //            onReady: function (event) {
-        //                event.target.mute();
-        //            }
-        //        }
-        //    });
-        //}
+        function onYouTubeIframeAPIReady() {
+            new YT.Player('background-video', {
+                videoId: 'dQw4w9WgXcQ',
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    showinfo: 0,
+                    modestbranding: 1,
+                    loop: 1,
+                    fs: 0,
+                    cc_load_policy: 0,
+                    iv_load_policy: 3,
+                    autohide: 0,
+                    mute: 1,
+                    playlist: 'dQw4w9WgXcQ'
+                },
+                events: {
+                    onReady: function (event) {
+                        event.target.mute();
+                    }
+                }
+            });
+        }
+
+        // Load the IFrame Player API code asynchronously.
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
