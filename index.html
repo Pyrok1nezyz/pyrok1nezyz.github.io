@@ -1,11 +1,18 @@
 ﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Rick Roll Counter</title>
+    <meta charset="UTF-8">
+    <title>Twitch Rickroll</title>
 </head>
 <body>
-<h1>Hello World!</h1>
+<button id="rickroll-button">Get Rickrolled!</button>
+
+<script>document.getElementById('rickroll-button').addEventListener('click', () => {
+    const clientId = 'o8j92ojn066fzkoeq1h7nku48i972w';
+    const redirectUri = 'https://yourusername.github.io/your-repo/callback.html';
+    const scope = 'user:read:email';
+    const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+    window.location.href = authUrl;
+});</script>
 </body>
 </html>
