@@ -42,6 +42,7 @@
                     .then(data => {
                         const userInfo = JSON.parse(data);
 
+
                         const contentUrl = `https://api.github.com/repos/${username}/${repo}/contents/${filePath}`;
 
                         window.fetch(contentUrl, {
