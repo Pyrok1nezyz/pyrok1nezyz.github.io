@@ -55,19 +55,23 @@
                                 let { display_name, offline_image_url, profile_image_url } = userInfo;
 
                                 let filteredObject = { display_name, offline_image_url, profile_image_url };
-                                users.push(filteredObject);
 
+                                const existingUser = users.find(user => user.display_name.toLowerCase() === display_name.toLowerCase());
 
-                                var result = await window.fetch(contentUrl, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'Content-Type': `application/json`,
-                                        'Accept': `application/json`
-                                    },
-                                    body: JSON.stringify(users)
-                                });
+                                if (!existingUser) {
+                                    users.push(filteredObject);
 
-                                console.log(result);
+                                    var result = await window.fetch(contentUrl, {
+                                        method: 'PUT',
+                                        headers: {
+                                            'Content-Type': `application/json`,
+                                            'Accept': `application/json`
+                                        },
+                                        body: JSON.stringify(users)
+                                    });
+
+                                    console.log(result);
+                                } 
                             })
                             .then(() => {
                                 window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
